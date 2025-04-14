@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Additional styles for dropdowns */
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            background-color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+        
+        .form-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="{{ url_for('index') }}">&larr; Back to Home</a>
+        </div>
+        
+        <h1>Heart Disease Detection</h1>
+        
+        <div class="info-section">
+            <p>Enter your cardiac health parameters below to assess your risk of heart disease. This tool analyzes various factors including age, blood pressure, cholesterol levels, and other clinical indicators.</p>
+            <p><strong>Note:</strong> This is a screening tool and not a substitute for professional medical advice. Please consult with a healthcare provider for proper diagnosis and treatment.</p>
+        </div>
+        
+        <div class="upload-section">
+            <h2>Enter Heart Health Parameters</h2>
+            
+            <form action="{{ url_for('heart') }}" method="post">
+                <div class="form-grid">
+                    <!-- Numeric inputs -->
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" min="1" max="120" required value="{{ input_values.age|default('') }}">
+                        <span class="input-help">Your age in years</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trestbps">Resting Blood Pressure</label>
+                        <input type="number" id="trestbps" name="trestbps" min="80" max="200" required value="{{ input_values.trestbps|default('') }}">
+                        <span class="input-help">mm Hg</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chol">Cholesterol</label>
+                        <input type="number" id="chol" name="chol" min="100" max="600" required value="{{ input_values.chol|default('') }}">
+                        <span class="input-help">mg/dl</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="thalch">Max Heart Rate</label>
+                        <input type="number" id="thalch" name="thalch" min="60" max="220" required value="{{ input_values.thalch|default('') }}">
+                        <span class="input-help">Maximum heart rate achieved</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="oldpeak">ST Depression</label>
+                        <input type="number" id="oldpeak" name="oldpeak" min="0" max="10" step="0.1" required value="{{ input_values.oldpeak|default('') }}">
+                        <span class="input-help">ST depression induced by exercise relative to rest</span>
+                    </div>
+                
+                    <!-- Categorical inputs as dropdowns -->
+                    <div class="form-group">
+                        <label for="sex">Sex</label>
+                        <select id="sex" name="sex" required>
+                            <option value="sex_Male">Male</option>
+                            <option value="sex_Female">Female</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cp">Chest Pain Type</label>
+                        <select id="cp" name="cp" required>
+                            <option value="cp_typical angina">Typical Angina</option>
+                            <option value="cp_atypical angina">Atypical Angina</option>
+                            <option value="cp_non-anginal pain">Non-Anginal Pain</option>
+                            <option value="cp_asymptomatic">Asymptomatic</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fbs">Fasting Blood Sugar</label>
+                        <select id="fbs" name="fbs" required>
+                            <option value="fbs_False">≤ 120 mg/dl</option>
+                            <option value="fbs_True">> 120 mg/dl</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="restecg">Resting ECG Results</label>
+                        <select id="restecg" name="restecg" required>
+                            <option value="restecg_normal">Normal</option>
+                            <option value="restecg_ST-T wave abnormality">ST-T Wave Abnormality</option>
+                            <option value="restecg_left ventricular hypertrophy">Left Ventricular Hypertrophy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="exang">Exercise Induced Angina</label>
+                        <select id="exang" name="exang" required>
+                            <option value="exang_False">No</option>
+                            <option value="exang_True">Yes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="slope">ST Segment Slope</label>
+                        <select id="slope" name="slope" required>
+                            <option value="slope_flat">Flat</option>
+                            <option value="slope_upsloping">Upsloping</option>
+                            <option value="slope_downsloping">Downsloping</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ca">Major Vessels Colored</label>
+                        <select id="ca" name="ca" required>
+                            <option value="ca_0.0">0</option>
+                            <option value="ca_1.0">1</option>
+                            <option value="ca_2.0">2</option>
+                            <option value="ca_3.0">3</option>
+                            <option value="ca_4.0">4</option>
+                        </select>
+                        <span class="input-help">Number of major vessels colored by fluoroscopy</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="thal">Thalassemia</label>
+                        <select id="thal" name="thal" required>
+                            <option value="thal_normal">Normal</option>
+                            <option value="thal_fixed defect">Fixed Defect</option>
+                            <option value="thal_reversible defect">Reversible Defect</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn">Predict Heart Disease Risk</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="button" class="btn sample-data-btn" id="fillSampleData">Fill Sample Data</button>
+                </div>
+            </form>
+        </div>
+        
+        {% if result %}
+        <div class="result-section">
+            <h2>Detection Result</h2>
+            <div class="parkinsons-result">
+                <div class="result-detail {% if 'Unlikely' in result %}healthy{% else %}alert{% endif %}">
+                    <h3>{{ result }}</h3>
+                    {% if 'Likely' in result %}
+                    <div class="recommendations">
+                        <h4>Recommendations:</h4>
+                        <ul>
+                            <li>Consult with a cardiologist for further evaluation</li>
+                            <li>Consider lifestyle modifications such as dietary changes and exercise</li>
+                            <li>Monitor blood pressure and cholesterol levels regularly</li>
+                            <li>Follow medication regimen as prescribed by your doctor</li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <div class="recommendations">
+                        <h4>Recommendations:</h4>
+                        <ul>
+                            <li>Continue with regular health check-ups</li>
+                            <li>Maintain a heart-healthy lifestyle with regular exercise</li>
+                            <li>Follow a balanced diet low in saturated fats and sodium</li>
+                            <li>Avoid smoking and limit alcohol consumption</li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="disclaimer">
+            <p><strong>Disclaimer:</strong> This tool provides an estimate based on statistical models and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('fillSampleData').addEventListener('click', function() {
+            // Sample data based on your example
+            document.getElementById('age').value = '63';
+            document.getElementById('trestbps').value = '145';
+            document.getElementById('chol').value = '233';
+            document.getElementById('thalch').value = '150';
+            document.getElementById('oldpeak').value = '2.3';
+            
+            // Set dropdown selections
+            document.getElementById('sex').value = 'sex_Male';
+            document.getElementById('cp').value = 'cp_typical angina';
+            document.getElementById('fbs').value = 'fbs_True';
+            document.getElementById('restecg').value = 'restecg_left ventricular hypertrophy';
+            document.getElementById('exang').value = 'exang_False';
+            document.getElementById('slope').value = 'slope_downsloping';
+            document.getElementById('ca').value = 'ca_0.0';
+            document.getElementById('thal').value = 'thal_fixed defect';
+        });
+    </script>
+</body>
+</html>
